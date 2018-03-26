@@ -1,5 +1,5 @@
 # SITE CONFIGURATION
-baseurl: 
+baseurl: "/"
 url: "https://Jeayong-Yu.github.io"
 title: Jeayong-Yu's Blog # site's title
 description: "A small blog of students studying finance engineering." # used by search engines
