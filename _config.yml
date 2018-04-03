@@ -8,7 +8,7 @@ description: "A small blog of students studying finance engineering." # used by 
 # THEME-SPECIFIC CONFIGURATION
 theme_settings:
   # Meta
-  title: Jeayong-Yu's Blog # blog's title
+  title: Jeayong-Yu's Blog
   avatar: assets/img/triangle.svg
   favicon: assets/favicon.ico
   gravatar: # Email MD5 hash
@@ -18,7 +18,7 @@ theme_settings:
      <p>Jeayong-Yu's Blog :<br>A small blog of students studying finance engineering.</p>
   header_text_feature_image: assets/img/pexels/triangular.jpeg
   footer_text: >
-   <a href="https://http://felab.khu.ac.kr">KyungHee University Financial Engineering Laboratory</a> <a href="https://github.com/Jeayong-Yu/">Jeayong-Yu</a>
+   <a href="https://felab.khu.ac.kr">KyungHee University Financial Engineering Laboratory</a> <a href="https://github.com/Jeayong-Yu/">Jeayong-Yu</a>
 
   # Icons
   rss: true  # Make sure you created a feed.xml with feed.xml layout
