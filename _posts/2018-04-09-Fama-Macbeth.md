@@ -1,4 +1,10 @@
-
+---
+layout: post
+title:  "[산업응용확률 및 통계] Fama-MacBeth in Python"
+subtitle: "Fama-MacBeth의 two-step regression을 활용한 two-parameter model의 증명"
+date:   2018-04-09 06:07:13 -0400
+background: '/img/posts/01.jpg'
+---
 
 ```python
 import pandas as pd
