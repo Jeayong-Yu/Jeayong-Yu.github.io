@@ -1,3 +1,10 @@
+---
+layout: post
+title:  "Fama-Macbeth"
+subtitle: "Fama-Macbeth-cross-sectional-regression"
+date:   2018-04-09 05:04:13 -0400
+background: '/img/posts/01.jpg'
+---
 
 
 ```python
