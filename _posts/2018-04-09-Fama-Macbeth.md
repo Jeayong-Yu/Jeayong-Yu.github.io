@@ -376,8 +376,6 @@ def rolling_window_cal_y(real_data, times):
     DF_real = pd.DataFrame()
     for i in range(len(start_period)):
         real = real_data.ix[real_data.index[start_period[i]]:real_data.index[end_period[i]]]
-        #print(real.ix[real_data.index[end_period[i]]])
-        #real_p = np.mean(real)
         real_p = real.ix[real_data.index[end_period[i]]]
         DF_real.loc[:,real_data.index[end_period[i]]] = real_p
     return DF_real.T
