@@ -6,6 +6,7 @@ date:   2018-04-09 06:07:13 -0400
 background: '/img/posts/01.jpg'
 ---
 
+
 ```python
 import pandas as pd
 import numpy as np
@@ -15,8 +16,8 @@ import statsmodels.formula.api as sm
 
 
 ```python
-market_data = pd.read_excel("D:\\제용\\금융공학 연구실\\학습용\\US_10_industry.xlsx", index_col=0)['Market']
-stock_data = pd.read_excel("D:\\제용\\금융공학 연구실\\학습용\\US_10_industry.xlsx", index_col=0)
+market_data = pd.read_excel("D:\\제용\\금융공학 연구실\\학습용\\US_10_industry_FM.xlsx", index_col=0)['Market']
+stock_data = pd.read_excel("D:\\제용\\금융공학 연구실\\학습용\\US_10_industry_FM.xlsx", index_col=0)
 stock_data = stock_data.ix[:,'NoDur':'Other']
 ```
 
@@ -54,11 +55,8 @@ stock_data.tail()
       <th>Durbl</th>
       <th>Manuf</th>
       <th>Enrgy</th>
-      <th>HiTec</th>
       <th>Telcm</th>
       <th>Shops</th>
-      <th>Hlth</th>
-      <th>Utils</th>
       <th>Other</th>
     </tr>
   </thead>
@@ -69,11 +67,8 @@ stock_data.tail()
       <td>0.0029</td>
       <td>0.0160</td>
       <td>0.0139</td>
-      <td>0.0176</td>
       <td>-0.0350</td>
       <td>-0.0144</td>
-      <td>-0.0323</td>
-      <td>-0.0392</td>
       <td>0.0326</td>
     </tr>
     <tr>
@@ -82,11 +77,8 @@ stock_data.tail()
       <td>-0.0164</td>
       <td>-0.0018</td>
       <td>0.0293</td>
-      <td>0.0241</td>
       <td>0.0048</td>
       <td>-0.0068</td>
-      <td>0.0036</td>
-      <td>0.0175</td>
       <td>-0.0121</td>
     </tr>
     <tr>
@@ -95,11 +87,8 @@ stock_data.tail()
       <td>-0.0358</td>
       <td>-0.0263</td>
       <td>-0.0289</td>
-      <td>-0.0109</td>
       <td>-0.0275</td>
       <td>-0.0397</td>
-      <td>-0.0743</td>
-      <td>-0.0061</td>
       <td>0.0059</td>
     </tr>
     <tr>
@@ -108,11 +97,8 @@ stock_data.tail()
       <td>0.0761</td>
       <td>0.0631</td>
       <td>0.0956</td>
-      <td>0.0060</td>
       <td>0.0601</td>
       <td>0.0445</td>
-      <td>0.0137</td>
-      <td>-0.0284</td>
       <td>0.1083</td>
     </tr>
     <tr>
@@ -121,11 +107,8 @@ stock_data.tail()
       <td>0.0383</td>
       <td>0.0053</td>
       <td>0.0213</td>
-      <td>0.0084</td>
       <td>0.0471</td>
       <td>-0.0042</td>
-      <td>0.0086</td>
-      <td>0.0364</td>
       <td>0.0293</td>
     </tr>
   </tbody>
@@ -136,13 +119,16 @@ stock_data.tail()
 
 
 ```python
-def DF_liner_regression(data, market_data, times):
-    def how_many_betas(data,times):
+def how_many_betas(data,times):
         repet_times = len(data)-times
         start_period = list(map(lambda x: x, range(times)))
         end_period = list(map(lambda x: x+repet_times, range(times)))
         return start_period, end_period    
+```
 
+
+```python
+def DF_liner_regression(data, market_data, times):
     start_period, end_period = how_many_betas(data,times)
     
     DF_beta = pd.DataFrame()
@@ -167,7 +153,7 @@ def DF_liner_regression(data, market_data, times):
 
 ```python
 time_series_beta, time_series_intercept = DF_liner_regression(stock_data, market_data,50)
-time_series_beta.tail()
+time_series_beta.head()
 ```
 
 
@@ -182,79 +168,61 @@ time_series_beta.tail()
       <th>Durbl</th>
       <th>Manuf</th>
       <th>Enrgy</th>
-      <th>HiTec</th>
       <th>Telcm</th>
       <th>Shops</th>
-      <th>Hlth</th>
-      <th>Utils</th>
       <th>Other</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>201608</th>
-      <td>0.714581</td>
-      <td>1.223192</td>
-      <td>1.027097</td>
-      <td>0.727595</td>
-      <td>1.337977</td>
-      <td>0.918208</td>
-      <td>0.952457</td>
-      <td>0.784403</td>
-      <td>0.419853</td>
-      <td>1.065718</td>
+      <th>201211</th>
+      <td>0.712616</td>
+      <td>1.176400</td>
+      <td>1.023954</td>
+      <td>0.777419</td>
+      <td>0.856403</td>
+      <td>0.951974</td>
+      <td>1.063345</td>
     </tr>
     <tr>
-      <th>201609</th>
-      <td>0.715412</td>
-      <td>1.225190</td>
-      <td>1.027316</td>
-      <td>0.727149</td>
-      <td>1.336352</td>
-      <td>0.916845</td>
-      <td>0.952930</td>
-      <td>0.784216</td>
-      <td>0.421479</td>
-      <td>1.065329</td>
+      <th>201212</th>
+      <td>0.713775</td>
+      <td>1.175372</td>
+      <td>1.023686</td>
+      <td>0.771671</td>
+      <td>0.861334</td>
+      <td>0.955347</td>
+      <td>1.064130</td>
     </tr>
     <tr>
-      <th>201610</th>
-      <td>0.715177</td>
-      <td>1.225279</td>
-      <td>1.026753</td>
-      <td>0.728560</td>
-      <td>1.335966</td>
-      <td>0.917130</td>
-      <td>0.953386</td>
-      <td>0.788021</td>
-      <td>0.422421</td>
-      <td>1.063829</td>
+      <th>201301</th>
+      <td>0.713310</td>
+      <td>1.172910</td>
+      <td>1.023437</td>
+      <td>0.775362</td>
+      <td>0.860952</td>
+      <td>0.954583</td>
+      <td>1.064230</td>
     </tr>
     <tr>
-      <th>201611</th>
-      <td>0.711201</td>
-      <td>1.226933</td>
-      <td>1.027365</td>
-      <td>0.732058</td>
-      <td>1.333629</td>
-      <td>0.917686</td>
-      <td>0.952207</td>
-      <td>0.785751</td>
-      <td>0.418682</td>
-      <td>1.066830</td>
+      <th>201302</th>
+      <td>0.712744</td>
+      <td>1.180943</td>
+      <td>1.023730</td>
+      <td>0.761206</td>
+      <td>0.872278</td>
+      <td>0.958258</td>
+      <td>1.064633</td>
     </tr>
     <tr>
-      <th>201612</th>
-      <td>0.711281</td>
-      <td>1.226141</td>
-      <td>1.026538</td>
-      <td>0.734993</td>
-      <td>1.332286</td>
-      <td>0.919397</td>
-      <td>0.950578</td>
-      <td>0.785614</td>
-      <td>0.419342</td>
-      <td>1.066849</td>
+      <th>201303</th>
+      <td>0.712178</td>
+      <td>1.184832</td>
+      <td>1.024273</td>
+      <td>0.759398</td>
+      <td>0.871638</td>
+      <td>0.959449</td>
+      <td>1.064270</td>
     </tr>
   </tbody>
 </table>
@@ -293,11 +261,8 @@ error_term.head()
       <th>Durbl</th>
       <th>Manuf</th>
       <th>Enrgy</th>
-      <th>HiTec</th>
       <th>Telcm</th>
       <th>Shops</th>
-      <th>Hlth</th>
-      <th>Utils</th>
       <th>Other</th>
     </tr>
   </thead>
@@ -308,11 +273,8 @@ error_term.head()
       <td>0.023927</td>
       <td>0.017467</td>
       <td>-0.024817</td>
-      <td>0.011288</td>
       <td>-0.008034</td>
       <td>0.004184</td>
-      <td>0.005071</td>
-      <td>-0.045948</td>
       <td>-0.007955</td>
     </tr>
     <tr>
@@ -321,11 +283,8 @@ error_term.head()
       <td>0.061016</td>
       <td>0.014846</td>
       <td>0.000311</td>
-      <td>-0.009918</td>
       <td>0.000136</td>
       <td>-0.024804</td>
-      <td>-0.018405</td>
-      <td>-0.009540</td>
       <td>0.022405</td>
     </tr>
     <tr>
@@ -334,11 +293,8 @@ error_term.head()
       <td>-0.028027</td>
       <td>0.002353</td>
       <td>0.030782</td>
-      <td>-0.045927</td>
       <td>-0.002901</td>
       <td>-0.000134</td>
-      <td>0.033764</td>
-      <td>0.020267</td>
       <td>0.010092</td>
     </tr>
     <tr>
@@ -347,11 +303,8 @@ error_term.head()
       <td>-0.012884</td>
       <td>-0.001236</td>
       <td>-0.009001</td>
-      <td>-0.008605</td>
       <td>0.008977</td>
       <td>-0.006511</td>
-      <td>-0.000460</td>
-      <td>0.009999</td>
       <td>0.004634</td>
     </tr>
     <tr>
@@ -360,18 +313,13 @@ error_term.head()
       <td>-0.005545</td>
       <td>-0.016118</td>
       <td>-0.013205</td>
-      <td>-0.024512</td>
       <td>0.018614</td>
       <td>0.006034</td>
-      <td>0.029746</td>
-      <td>0.032974</td>
       <td>-0.002206</td>
     </tr>
   </tbody>
 </table>
 </div>
-
-
 
 ```python
 def rolling_window_cal(beta_data, error_data, times):
@@ -392,7 +340,6 @@ def rolling_window_cal(beta_data, error_data, times):
     return {'beta_p' : DF_beta_p.T, 'beta_p_sq' : DF_beta_p_sq.T, 'error_term_p' : DF_error_term_p.T}
 ```
 
-
 ```python
 rolling_window_cal(time_series_beta, time_series_intercept, 30)
 ```
@@ -400,20 +347,24 @@ rolling_window_cal(time_series_beta, time_series_intercept, 30)
 
 
 
-    {'beta_p':            NoDur     Durbl     Manuf     Enrgy     HiTec     Telcm     Shops  \
-     201407  0.715540  1.189876  1.025321  0.751282  1.330660  0.882397  0.961173   
-     201408  0.716066  1.191065  1.025421  0.749003  1.330860  0.884793  0.961964   
-     201409  0.716445  1.192776  1.025622  0.746964  1.331095  0.886943  0.962567   
-     201410  0.716869  1.194620  1.025840  0.744621  1.331542  0.889133  0.963282   
-     201411  0.717336  1.196189  1.026067  0.742730  1.331860  0.890813  0.963873   
-     
-     
-                Hlth      Utils     Other  
-     201407  0.777377  0.436765  1.066578  
-     201408  0.778228  0.436408  1.066917  
-     201409  0.778778  0.436004  1.067177  
-     201410  0.779303  0.435552  1.067429  
-     201411  0.779430  0.435199  1.067648  }
+    {'beta_p':            NoDur     Durbl     Manuf     Enrgy     Telcm     Shops     Other
+     201608  0.720644  1.221555  1.026674  0.721073  0.917163  0.963859  1.067782
+     201609  0.720278  1.222007  1.026632  0.721494  0.917535  0.962974  1.067616
+     201610  0.719890  1.222302  1.026572  0.722199  0.917917  0.962060  1.067259
+     201611  0.719280  1.222592  1.026557  0.723106  0.918187  0.961052  1.067038
+     201612  0.718707  1.222847  1.026460  0.724143  0.918434  0.960007  1.066805,
+     'beta_p_sq':            NoDur     Durbl     Manuf     Enrgy     Telcm     Shops     Other
+     201608  0.519328  1.492198  1.054060  0.519947  0.841188  0.929023  1.140158
+     201609  0.518801  1.493300  1.053973  0.520553  0.841871  0.927319  1.139804
+     201610  0.518242  1.494022  1.053850  0.521571  0.842571  0.925560  1.139043
+     201611  0.517364  1.494732  1.053819  0.522883  0.843067  0.923621  1.138569
+     201612  0.516539  1.495356  1.053620  0.524384  0.843522  0.921613  1.138072,
+     'error_term_p':            NoDur     Durbl     Manuf     Enrgy     Telcm     Shops     Other
+     201608  0.005117 -0.002574  0.000968  0.003339  0.000964  0.001743 -0.000841
+     201609  0.005102 -0.002618  0.000972  0.003335  0.000974  0.001711 -0.000843
+     201610  0.005088 -0.002658  0.000970  0.003323  0.000982  0.001676 -0.000836
+     201611  0.005070 -0.002693  0.000969  0.003309  0.000994  0.001652 -0.000825
+     201612  0.005061 -0.002723  0.000970  0.003286  0.000999  0.001631 -0.000814}
 
 
 
@@ -425,14 +376,16 @@ def rolling_window_cal_y(real_data, times):
     DF_real = pd.DataFrame()
     for i in range(len(start_period)):
         real = real_data.ix[real_data.index[start_period[i]]:real_data.index[end_period[i]]]
-        real_p = np.mean(real)
+        #print(real.ix[real_data.index[end_period[i]]])
+        #real_p = np.mean(real)
+        real_p = real.ix[real_data.index[end_period[i]]]
         DF_real.loc[:,real_data.index[end_period[i]]] = real_p
     return DF_real.T
 ```
 
 
 ```python
-rolling_window_cal_y(stock_data.ix[stock_data.index[-50]:stock_data.index[-1]], 30).tail()
+rolling_window_cal_y(stock_data.ix[stock_data.index[-50]:stock_data.index[-1]], 30).head()
 ```
 
 
@@ -447,79 +400,61 @@ rolling_window_cal_y(stock_data.ix[stock_data.index[-50]:stock_data.index[-1]], 
       <th>Durbl</th>
       <th>Manuf</th>
       <th>Enrgy</th>
-      <th>HiTec</th>
       <th>Telcm</th>
       <th>Shops</th>
-      <th>Hlth</th>
-      <th>Utils</th>
       <th>Other</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>201608</th>
-      <td>0.008386</td>
-      <td>0.000871</td>
-      <td>0.003133</td>
-      <td>-0.002714</td>
-      <td>0.007038</td>
-      <td>0.003700</td>
-      <td>0.006595</td>
-      <td>0.003648</td>
-      <td>0.002881</td>
-      <td>0.003400</td>
+      <th>201407</th>
+      <td>-0.0437</td>
+      <td>-0.0463</td>
+      <td>-0.0418</td>
+      <td>-0.0358</td>
+      <td>0.0050</td>
+      <td>-0.0230</td>
+      <td>-0.0212</td>
     </tr>
     <tr>
-      <th>201609</th>
-      <td>0.008343</td>
-      <td>-0.000186</td>
-      <td>0.003129</td>
-      <td>-0.001514</td>
-      <td>0.008819</td>
-      <td>0.004795</td>
-      <td>0.005514</td>
-      <td>0.004243</td>
-      <td>0.002838</td>
-      <td>0.002319</td>
+      <th>201408</th>
+      <td>0.0565</td>
+      <td>0.0520</td>
+      <td>0.0477</td>
+      <td>0.0227</td>
+      <td>0.0055</td>
+      <td>0.0515</td>
+      <td>0.0442</td>
     </tr>
     <tr>
-      <th>201610</th>
-      <td>0.008576</td>
-      <td>0.000105</td>
-      <td>0.003710</td>
-      <td>-0.000800</td>
-      <td>0.009881</td>
-      <td>0.005762</td>
-      <td>0.003767</td>
-      <td>-0.000038</td>
-      <td>0.001986</td>
-      <td>0.005495</td>
+      <th>201409</th>
+      <td>-0.0009</td>
+      <td>-0.0942</td>
+      <td>-0.0238</td>
+      <td>-0.0802</td>
+      <td>-0.0168</td>
+      <td>-0.0144</td>
+      <td>-0.0102</td>
     </tr>
     <tr>
-      <th>201611</th>
-      <td>0.004410</td>
-      <td>-0.000119</td>
-      <td>0.003748</td>
-      <td>0.001457</td>
-      <td>0.006286</td>
-      <td>0.004295</td>
-      <td>0.003243</td>
-      <td>-0.001438</td>
-      <td>0.002714</td>
-      <td>0.007400</td>
+      <th>201410</th>
+      <td>0.0264</td>
+      <td>0.0386</td>
+      <td>0.0236</td>
+      <td>-0.0444</td>
+      <td>0.0141</td>
+      <td>0.0303</td>
+      <td>0.0329</td>
     </tr>
     <tr>
-      <th>201612</th>
-      <td>0.007210</td>
-      <td>0.001895</td>
-      <td>0.004952</td>
-      <td>0.003729</td>
-      <td>0.007857</td>
-      <td>0.007610</td>
-      <td>0.002710</td>
-      <td>-0.001438</td>
-      <td>0.004581</td>
-      <td>0.009176</td>
+      <th>201411</th>
+      <td>0.0481</td>
+      <td>0.0474</td>
+      <td>0.0223</td>
+      <td>-0.0987</td>
+      <td>0.0309</td>
+      <td>0.0746</td>
+      <td>0.0279</td>
     </tr>
   </tbody>
 </table>
@@ -540,10 +475,10 @@ pd.fama_macbeth(y = rolling_window_cal_y(stock_data.ix[stock_data.index[-50]:sto
     
     ----------------------Summary of Estimated Coefficients------------------------
          Variable          Beta       Std Err        t-stat       CI 2.5%      CI 97.5%
-         (beta_p)        0.0028        0.0020          1.38       -0.0012        0.0067
-      (beta_p_sq)        0.0194        0.0022          8.88        0.0151        0.0236
-    (error_term_p)        2.9906        0.3622          8.26        2.2806        3.7005
-      (intercept)       -0.0169        0.0034         -4.96       -0.0236       -0.0102
+         (beta_p)        0.2176        0.1276        **1.70**     -0.0325        0.4678
+      (beta_p_sq)       -0.0889        0.0561       **-1.59**     -0.1989        0.0210
+    (error_term_p)        3.2206        3.5492        **0.91**     -3.7359       10.1771
+      (intercept)       -0.1247        0.0832       **-1.50**     -0.2878        0.0383
     
     --------------------------------End of Summary---------------------------------
 
