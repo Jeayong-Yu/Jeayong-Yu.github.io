@@ -7,12 +7,28 @@ background: '/img/posts/01.jpg'
 ---
 
 
+# Fama-Macbeth Regression
+----------------------------------------------------
+
+Fama-Macbeth의 1973년 논문인 *"Risk, Return and Equilibrium empirical Tests"* 에서 사용하는 두 가지 회귀분석을 통한 Risk-Return의 two-parameter model의 증명에 사용된 회귀분석을 python 코드로 간단하게 구현해 보았습니다.
+
+
+Fama-Macbeth가 제안한 2단계 회귀분석은
+
+1. Time-Series Regression
+2. Cross-Sectional Regression
+
+을 활용함으로서 첫 번째, Time-Series Regression에서 사용하여 구한 베타들을 두 번째, Cross-Sectional Regression에 변수로 활용함으로서 첫 번째 회귀분석을 통하여 도출된 베타들에 대한 통계적 분석을 실시할 수 있습니다. 이 때, 귀무가설을 설정하여 논문에서 이야기하는 모델의 3가지 함의를 검증할 수 있습니다.
+
+
 ```python
 import pandas as pd
 import numpy as np
 from scipy import stats
 import statsmodels.formula.api as sm
 ```
+
+### 1. Data Set
 
 
 ```python
@@ -117,6 +133,12 @@ stock_data.tail()
 
 
 
+테스트에 활용할 데이터의 형태입니다.
+
+### 2. Time-Series Regression
+
+여기서 Time-Series Regression을 활용하기 위해서 각 기간에 대한 rolling window방법을 통하여 기간별 time-series를 통해 얻은 베타를 연속적으로 추정합니다.
+
 
 ```python
 def how_many_betas(data,times):
@@ -125,6 +147,8 @@ def how_many_betas(data,times):
         end_period = list(map(lambda x: x+repet_times, range(times)))
         return start_period, end_period    
 ```
+
+첫 번째, 위 함수를 통하여 Time-Series 분석을 위해 필요한 데이터의 양을 DataFrame에서 추출하기 위하여 슬라이싱에 필요한 인덱스를 자르는 함수를 정의합니다.
 
 
 ```python
@@ -149,6 +173,8 @@ def DF_liner_regression(data, market_data, times):
     DF_intercept.index = data.columns
     return DF_beta.T, DF_intercept.T
 ```
+
+위 함수는 마켓 데이터와 베타를 구하고자하는 개별 포트폴리오(또는 개별 주식)의 데이터를 받아 베타를 Time-Series로 구하기 위해서 원하는 베타의 수를 인풋으로 받아 각 자산들에 대한 베타를 계산한 DataFrame과 intercept를 받은 DataFrame을 반환합니다.
 
 
 ```python
@@ -229,6 +255,91 @@ time_series_beta.head()
 </div>
 
 
+
+
+```python
+time_series_intercept.head()
+```
+
+
+
+
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>NoDur</th>
+      <th>Durbl</th>
+      <th>Manuf</th>
+      <th>Enrgy</th>
+      <th>Telcm</th>
+      <th>Shops</th>
+      <th>Other</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>201211</th>
+      <td>0.005674</td>
+      <td>-0.002121</td>
+      <td>0.000844</td>
+      <td>0.003475</td>
+      <td>0.001868</td>
+      <td>0.002496</td>
+      <td>-0.000746</td>
+    </tr>
+    <tr>
+      <th>201212</th>
+      <td>0.005619</td>
+      <td>-0.002003</td>
+      <td>0.000872</td>
+      <td>0.003306</td>
+      <td>0.002015</td>
+      <td>0.002535</td>
+      <td>-0.000668</td>
+    </tr>
+    <tr>
+      <th>201301</th>
+      <td>0.005769</td>
+      <td>-0.001904</td>
+      <td>0.000941</td>
+      <td>0.003030</td>
+      <td>0.002046</td>
+      <td>0.002664</td>
+      <td>-0.000570</td>
+    </tr>
+    <tr>
+      <th>201302</th>
+      <td>0.005829</td>
+      <td>-0.002150</td>
+      <td>0.000930</td>
+      <td>0.003381</td>
+      <td>0.001770</td>
+      <td>0.002549</td>
+      <td>-0.000568</td>
+    </tr>
+    <tr>
+      <th>201303</th>
+      <td>0.005819</td>
+      <td>-0.002004</td>
+      <td>0.000940</td>
+      <td>0.003302</td>
+      <td>0.001759</td>
+      <td>0.002600</td>
+      <td>-0.000584</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+위 함수를 통해 반환된 각각의 데이터프레임입니다.
+
+### 3. Cross-Sectional Regression
+
+논문에서 제시된 3가지 함의에 대한 가설검정을 하기 위해서 error-term을 계산해 주는 함수를 구현합니다.
 
 
 ```python
@@ -321,6 +432,11 @@ error_term.head()
 </table>
 </div>
 
+
+
+Time-Series 회귀분석을 통해 위에서 구한 각각의 베타들을 활용하여 각각의 error-term에 대한 계산을 해주고 그 또한 데이터프레임의 형태로 반환 받습니다.
+
+
 ```python
 def rolling_window_cal(beta_data, error_data, times):
     start_period, end_period = how_many_betas(beta_data, times)
@@ -340,6 +456,9 @@ def rolling_window_cal(beta_data, error_data, times):
     return {'beta_p' : DF_beta_p.T, 'beta_p_sq' : DF_beta_p_sq.T, 'error_term_p' : DF_error_term_p.T}
 ```
 
+아래에서 활용할 pandas fama-macbeth 회귀분석(Cross-Sectional Regression)을 사용하기 위하여 각 자산들에 대한 베타, 베타 제곱, 에러텀을 딕셔너리의 형태로 반환하는 함수를 정의합니다.
+
+
 ```python
 rolling_window_cal(time_series_beta, time_series_intercept, 30)
 ```
@@ -348,18 +467,21 @@ rolling_window_cal(time_series_beta, time_series_intercept, 30)
 
 
     {'beta_p':            NoDur     Durbl     Manuf     Enrgy     Telcm     Shops     Other
+     
      201608  0.720644  1.221555  1.026674  0.721073  0.917163  0.963859  1.067782
      201609  0.720278  1.222007  1.026632  0.721494  0.917535  0.962974  1.067616
      201610  0.719890  1.222302  1.026572  0.722199  0.917917  0.962060  1.067259
      201611  0.719280  1.222592  1.026557  0.723106  0.918187  0.961052  1.067038
      201612  0.718707  1.222847  1.026460  0.724143  0.918434  0.960007  1.066805,
      'beta_p_sq':            NoDur     Durbl     Manuf     Enrgy     Telcm     Shops     Other
+ 
      201608  0.519328  1.492198  1.054060  0.519947  0.841188  0.929023  1.140158
      201609  0.518801  1.493300  1.053973  0.520553  0.841871  0.927319  1.139804
      201610  0.518242  1.494022  1.053850  0.521571  0.842571  0.925560  1.139043
      201611  0.517364  1.494732  1.053819  0.522883  0.843067  0.923621  1.138569
      201612  0.516539  1.495356  1.053620  0.524384  0.843522  0.921613  1.138072,
      'error_term_p':            NoDur     Durbl     Manuf     Enrgy     Telcm     Shops     Other
+
      201608  0.005117 -0.002574  0.000968  0.003339  0.000964  0.001743 -0.000841
      201609  0.005102 -0.002618  0.000972  0.003335  0.000974  0.001711 -0.000843
      201610  0.005088 -0.002658  0.000970  0.003323  0.000982  0.001676 -0.000836
@@ -367,6 +489,8 @@ rolling_window_cal(time_series_beta, time_series_intercept, 30)
      201612  0.005061 -0.002723  0.000970  0.003286  0.000999  0.001631 -0.000814}
 
 
+
+각각의 포트폴리오(또는 개별자산)에 형태로 베타, 베타 제곱, 에러텀을 딕션너리로 표현한 모습입니다.
 
 
 ```python
@@ -380,6 +504,8 @@ def rolling_window_cal_y(real_data, times):
         DF_real.loc[:,real_data.index[end_period[i]]] = real_p
     return DF_real.T
 ```
+
+위에서 Cross-Sectional에 활용될 변수들을 구하였다면 이번에는 비교적 간단한 종속변수에 대한 데이터를 반환하는 함수를 구성합니다.
 
 
 ```python
@@ -460,10 +586,14 @@ rolling_window_cal_y(stock_data.ix[stock_data.index[-50]:stock_data.index[-1]], 
 
 
 
+함수를 통해서 얻을 수 있는 데이터프레임의 형태입니다.
+
 
 ```python
 pd.fama_macbeth(y = rolling_window_cal_y(stock_data.ix[stock_data.index[-50]:stock_data.index[-1]], 30), x= rolling_window_cal(time_series_beta, time_series_intercept, 30))
 ```
+
+
 
     
     ----------------------Summary of Fama-MacBeth Analysis-------------------------
@@ -482,7 +612,20 @@ pd.fama_macbeth(y = rolling_window_cal_y(stock_data.ix[stock_data.index[-50]:sto
 
 
 
-결과의 t-statistic 값을 통하여 각 함의들 중 risk & return의 선형성을 나타내는 함의를 제외하고는 기각되는 것을 확인 할 수 있다.
+pandas의 *fama_macbeth* 함수를 통하여 구한 종속변수와 독립변수들을 활용해 회귀계수의 추정을 얻습니다.
+
+### 4. 결론 및 한계
+
+결과의 t-statistic 값을 통하여 각 함의들 중 risk & return의 선형성을 나타내는 함의를 제외하고는 기각되는 것을 확인 할 수 있습니다.
+
+* 첫 번째로, 베타의 t-statistic 값을 통하여 베타의 회귀계수가 0이라는 귀무가설을 기각합니다.
+* 두 번째, 베타 제곱의 t-statistic 값을 통해 베타 제곱의 회귀계수가 0이라는 귀무가설을 기각할 수 없음으로 베타 제곱의 회귀계수는 0입니다.
+* 세 번째, error-term의 t-statistic 값을 통하여 체계적 위험을 제외한 위험을 의미하는 회귀계수가 0이라는 귀무가설을 기각할 수 없으므로 다음 항의 회귀계수는 0입니다.
 
 
-그렇지만 다른 값들의 p-value 값 또한 가설을 기각할 수 있지는 않지만 낮게 나오는 이유는 논문에서 말하는 바와 같이 충분히 잘 분산된 포트폴리오를 사용하지 않아서 발생하는 문제로 생각된다.
+
+위 분석을 통해서 확인할 수 있는 t-statistc을 활용해서 도출되는 **p-value 값들은 두 번째와, 세 번째의 결론을 통해서 알 수 있듯이 가설을 기각할 수 있지는 않지만 낮게 나오고 있다.**
+
+
+이러한 이유는 논문에서 말하는 바와 같이 *충분히 잘 분산된 포트폴리오*를 사용하지 않아서 발생하는 문제로 고려된다.
+따라서, 차후 연구를 통해서 활용할 데이터 및 포트폴리오 구성의 기준을 확정하여 충분히 잘 분산된 포트폴리오를 사용한다면 보다 정확한 결과를 얻을 수 있다고 기대한다.
